@@ -45,6 +45,6 @@ public class User{
     @Column(nullable= false)
     private Role role;
 
-    @OneToMany(mappedBy="users", cascade= CascadeType.ALL)
+    @OneToMany(mappedBy="user", cascade= CascadeType.ALL)
     private List<Reservation> reservations; 
 }

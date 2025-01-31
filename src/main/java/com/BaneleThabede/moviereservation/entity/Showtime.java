@@ -1,6 +1,7 @@
 package com.BaneleThabede.moviereservation.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
@@ -10,7 +11,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinColumns;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -28,7 +28,7 @@ public class Showtime {
 
     @ManyToOne
     @JoinColumn(name="movie_id", nullable=false)
-    private Movie Movie;
+    private Movie movie;
 
     @Column(nullable=false)
     private LocalDateTime showtime;
@@ -37,7 +37,7 @@ public class Showtime {
     private int totalSeats;
 
     @OneToMany(mappedBy="showtime", cascade= CascadeType.ALL)
-    private Seat seat;
+    private List<Seat> seats;
 
 }
 
