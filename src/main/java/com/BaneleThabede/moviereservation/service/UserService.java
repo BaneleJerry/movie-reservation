@@ -1,12 +1,21 @@
 package com.BaneleThabede.moviereservation.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import com.BaneleThabede.moviereservation.Repository.UserRepository;
+import com.BaneleThabede.moviereservation.config.JwtUtils;
+import com.BaneleThabede.moviereservation.dto.LoginRequest;
 import com.BaneleThabede.moviereservation.dto.UserDto;
 import com.BaneleThabede.moviereservation.entity.User;
+import com.BaneleThabede.moviereservation.service.userService.UserDetailsImpl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,32 +23,37 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    @Autowired
+    AuthenticationManager authenticationManager;
 
-    // Constructor Injection (Best Practice)
-    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    PasswordEncoder encoder;
+
+    @Autowired
+    JwtUtils jwtUtils;
+
+    @Autowired
+    UserRepository userRepository;
 
     public User registerNewUserAccount(UserDto userDto) {
+
         User user = new User();
         user.setName(userDto.getName());
+        user.setUsername(userDto.getUsername());
+        user.setLastName(userDto.getLastName());
         user.setEmail(userDto.getEmail());
-        user.setPasswordHash(passwordEncoder.encode(userDto.getPassword()));
+        user.setPassword(encoder.encode(userDto.getPassword()));
 
         return userRepository.save(user);
     }
 
-    public boolean authenticateUser(String email, String password) {
-        Optional<User> userOpt = userRepository.findByEmail(email);
-
-        if (userOpt.isPresent()) {
-            String passwordHash = userOpt.get().getPasswordHash();
-            return passwordEncoder.matches(password, passwordHash);
-        }
-        return false;
+    public String authenticateUser(LoginRequest loginRequest) {
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext()
+                .setAuthentication(auth);
+        UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
+        return userDetails.getUsername();
     }
 
     public User findByEmail(String email) {
@@ -68,9 +82,9 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
-            if (passwordEncoder.matches(oldPassword, user.getPasswordHash())) { // Check old password
-                String newPasswordHash = passwordEncoder.encode(newPassword); // Hash the new password
-                user.setPasswordHash(newPasswordHash);
+            if (encoder.matches(oldPassword, user.getPassword())) { // Check old password
+                String newPasswordHash = encoder.encode(newPassword); // Hash the new password
+                user.setPassword(newPasswordHash);
                 userRepository.save(user);
                 return true;
             } else {
@@ -84,8 +98,6 @@ public class UserService {
         }
     }
 
-
-
     // Custom Exception for User Not Found
     public static class UserNotFoundException extends RuntimeException {
         public UserNotFoundException(String message) {
@@ -98,5 +110,9 @@ public class UserService {
         public InvalidPasswordException(String message) {
             super(message);
         }
+    }
+
+    public List<User> getUsers() {
+        return userRepository.findAll();
     }
 }

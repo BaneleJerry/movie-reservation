@@ -20,31 +20,36 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="users")
-public class User{
+@Table(name = "users")
+public class User {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique= true)
+    @Column(nullable = false)
+    private String lastName;
+
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable= false)
-    private String passwordHash;
+    @Column(nullable = false)
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable= false)
+    @Column(nullable = false)
     private Role role = Role.USER;
 
-    @OneToMany(mappedBy="user", cascade= CascadeType.ALL)
-    private List<Reservation> reservations; 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Reservation> reservations;
 }
