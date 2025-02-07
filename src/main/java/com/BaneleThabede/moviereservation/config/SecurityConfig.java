@@ -61,7 +61,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(WHITE_LIST_URL).permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")// Allow these paths
-                .anyRequest().authenticated() // Protect all other endpoints
+                .anyRequest().permitAll() // Protect all other endpoints
             )
             .exceptionHandling(ex -> ex.authenticationEntryPoint(entryPoint))
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

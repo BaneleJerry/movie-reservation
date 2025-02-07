@@ -1,6 +1,6 @@
 package com.BaneleThabede.moviereservation.controller;
 
-import com.BaneleThabede.moviereservation.Repository.UserRepository;
+import com.BaneleThabede.moviereservation.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

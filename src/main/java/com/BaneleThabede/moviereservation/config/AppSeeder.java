@@ -1,6 +1,6 @@
 package com.BaneleThabede.moviereservation.config;
 
-import com.BaneleThabede.moviereservation.Repository.UserRepository;
+import com.BaneleThabede.moviereservation.repository.UserRepository;
 import com.BaneleThabede.moviereservation.entity.User;
 import com.BaneleThabede.moviereservation.entity.enums.Role;
 

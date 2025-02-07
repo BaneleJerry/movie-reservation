@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.BaneleThabede.moviereservation.Repository.UserRepository;
+import com.BaneleThabede.moviereservation.repository.UserRepository;
 import com.BaneleThabede.moviereservation.config.JwtUtils;
 import com.BaneleThabede.moviereservation.dto.LoginRequest;
 import com.BaneleThabede.moviereservation.dto.UserDto;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-
     @Autowired
     AuthenticationManager authenticationManager;
 

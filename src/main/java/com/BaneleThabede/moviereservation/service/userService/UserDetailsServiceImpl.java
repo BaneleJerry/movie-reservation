@@ -1,7 +1,7 @@
 package com.BaneleThabede.moviereservation.service.userService;
 
-import com.BaneleThabede.moviereservation.Repository.UserRepository;
 import com.BaneleThabede.moviereservation.entity.User;
+import com.BaneleThabede.moviereservation.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

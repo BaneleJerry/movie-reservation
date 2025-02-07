@@ -1,4 +1,4 @@
-package com.BaneleThabede.moviereservation.Repository;
+package com.BaneleThabede.moviereservation.repository;
 
 import java.util.Optional;
 import java.util.UUID;
