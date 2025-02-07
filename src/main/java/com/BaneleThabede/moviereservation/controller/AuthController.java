@@ -11,6 +11,7 @@ import com.BaneleThabede.moviereservation.service.userService.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-public class UserController {
+public class AuthController {
      @Autowired
     AuthenticationManager authenticationManager;
 
@@ -55,7 +56,7 @@ public class UserController {
 
         return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername()));    
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public ResponseEntity<?> getUsers(){
         return new ResponseEntity<>(userService.getUsers(),HttpStatus.OK);

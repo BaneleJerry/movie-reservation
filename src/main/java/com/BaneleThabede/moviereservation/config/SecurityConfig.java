@@ -38,7 +38,7 @@ public class SecurityConfig {
         return new AuthTokenFilter();
     }
 
-    @Bean
+   @Bean 
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
@@ -59,7 +59,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(WHITE_LIST_URL).permitAll() // Allow these paths
+                .requestMatchers(WHITE_LIST_URL).permitAll()
+                .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")// Allow these paths
                 .anyRequest().authenticated() // Protect all other endpoints
             )
             .exceptionHandling(ex -> ex.authenticationEntryPoint(entryPoint))
