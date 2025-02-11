@@ -15,6 +15,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.Data;
 
 @Data
@@ -28,6 +30,7 @@ public class Showtime {
 
     @ManyToOne
     @JoinColumn(name="movie_id", nullable=false)
+    @JsonBackReference
     private Movie movie;
 
     @Column(nullable=false)
