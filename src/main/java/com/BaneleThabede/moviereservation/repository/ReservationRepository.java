@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
 
+    boolean existsByShowtime_IdAndSeat_Id(UUID showtimeId, UUID id);
+
 }

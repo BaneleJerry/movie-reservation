@@ -10,7 +10,6 @@ import com.BaneleThabede.moviereservation.dto.LoginRequest;
 import com.BaneleThabede.moviereservation.dto.UserDto;
 import com.BaneleThabede.moviereservation.entity.User;
 import com.BaneleThabede.moviereservation.service.userService.UserDetailsImpl;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,6 +33,9 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
+    public User getUserByUsername(String username){
+      return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("Can not Find User"));
+    }
     public User registerNewUserAccount(UserDto userDto) {
 
         User user = new User();
@@ -113,5 +115,11 @@ public class UserService {
 
     public List<User> getUsers() {
         return userRepository.findAll();
+    }
+
+    public User findById(UUID currentUser) {
+        return userRepository.findById(currentUser).orElseThrow(
+                () -> new UserNotFoundException("User not found with ID: " + currentUser)
+                );
     }
 }

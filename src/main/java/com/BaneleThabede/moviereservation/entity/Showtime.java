@@ -16,6 +16,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
 
@@ -38,8 +39,9 @@ public class Showtime {
 
     @Column(nullable=false)
     private int totalSeats;
-
+    
     @OneToMany(mappedBy="showtime", cascade= CascadeType.ALL)
+    @JsonManagedReference
     private List<Seat> seats;
 
 }

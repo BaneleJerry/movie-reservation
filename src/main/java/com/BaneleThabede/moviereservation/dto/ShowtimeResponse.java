@@ -1,7 +1,10 @@
 package com.BaneleThabede.moviereservation.dto;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.UUID;
+
+import com.BaneleThabede.moviereservation.entity.Seat;
 
 import lombok.Data;
 
@@ -12,4 +15,5 @@ public class ShowtimeResponse {
     private int totalSeats;
     private UUID movieId;
     private String movieTitle;
+    private Collection<Seat> seats;
 }

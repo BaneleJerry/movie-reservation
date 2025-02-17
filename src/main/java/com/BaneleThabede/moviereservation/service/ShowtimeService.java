@@ -216,6 +216,7 @@ public class ShowtimeService {
         response.setTotalSeats(showtime.getTotalSeats());
         response.setMovieId(showtime.getMovie().getId());
         response.setMovieTitle(showtime.getMovie().getTitle());
+        response.setSeats(showtime.getSeats());
         return response;
     }
 

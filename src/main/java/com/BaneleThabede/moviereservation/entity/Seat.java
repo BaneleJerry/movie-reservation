@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import com.BaneleThabede.moviereservation.entity.enums.SeatStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,6 +33,7 @@ public class Seat {
 
     @ManyToOne
     @JoinColumn(name = "showtime_id", nullable = false)
+    @JsonBackReference
     private Showtime showtime;
 
     @Column(nullable = false)
