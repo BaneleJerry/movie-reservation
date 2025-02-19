@@ -7,6 +7,8 @@ import java.util.UUID;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,6 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import com.BaneleThabede.moviereservation.entity.enums.ShowtimeStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -39,6 +42,10 @@ public class Showtime {
 
     @Column(nullable=false)
     private int totalSeats;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ShowtimeStatus status = ShowtimeStatus.UPCOMING;
     
     @OneToMany(mappedBy="showtime", cascade= CascadeType.ALL)
     @JsonManagedReference

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 import com.BaneleThabede.moviereservation.entity.Seat;
+import com.BaneleThabede.moviereservation.entity.enums.ShowtimeStatus;
 
 import lombok.Data;
 
@@ -16,4 +17,5 @@ public class ShowtimeResponse {
     private UUID movieId;
     private String movieTitle;
     private Collection<Seat> seats;
+    private ShowtimeStatus status;
 }

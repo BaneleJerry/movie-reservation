@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private static final String[] WHITE_LIST_URL = { "/h2-console/**", "/auth/**", "/user-dashboard" };
+    private static final String[] WHITE_LIST_URL = { "/h2-console/**", "/api/auth/**", "/user-dashboard" };
 
     @Autowired
     AuthEntryPointJwt entryPoint;

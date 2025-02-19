@@ -1,5 +1,6 @@
 package com.BaneleThabede.moviereservation.repository;
 
+import java.util.Collection;
 import java.util.UUID;
 
 import com.BaneleThabede.moviereservation.entity.Reservation;
@@ -11,5 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
 
     boolean existsByShowtime_IdAndSeat_Id(UUID showtimeId, UUID id);
+
+    Collection<Reservation> findByUserId(UUID id);
 
 }

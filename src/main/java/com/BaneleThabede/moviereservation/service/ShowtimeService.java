@@ -16,12 +16,14 @@ import com.BaneleThabede.moviereservation.entity.Movie;
 import com.BaneleThabede.moviereservation.entity.Seat;
 import com.BaneleThabede.moviereservation.entity.Showtime;
 import com.BaneleThabede.moviereservation.entity.enums.SeatStatus;
+import com.BaneleThabede.moviereservation.entity.enums.ShowtimeStatus;
 import com.BaneleThabede.moviereservation.exception.MovieNotFoundException;
 import com.BaneleThabede.moviereservation.repository.MoviesRepository;
 import com.BaneleThabede.moviereservation.repository.SeatRepository;
 import com.BaneleThabede.moviereservation.repository.ShowtimeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -168,12 +170,12 @@ public class ShowtimeService {
                 .collect(Collectors.toList());
     }
 
-    public Collection<ShowtimeResponse> getShowtimesByMovieAndDateRange(UUID movieId, LocalDateTime start, LocalDateTime end) {
+    public Collection<ShowtimeResponse> getShowtimesByMovieAndDateRange(UUID movieId, LocalDateTime start,
+            LocalDateTime end) {
         return showtimeRepository.findByMovie_IdAndShowtimeBetween(movieId, start, end).stream()
                 .map(this::mapToShowtimeResponse)
                 .collect(Collectors.toList());
     }
-
 
     public ShowtimeResponse updateShowtime(ShowtimeRequest request) {
         if (!validateShowtimeDetails(request)) {
@@ -181,7 +183,8 @@ public class ShowtimeService {
         }
 
         Showtime showtime = showtimeRepository.findById(request.getId())
-                .orElseThrow(() -> new MovieNotFoundException("Showtime with id '" + request.getId() + "' does not exist"));
+                .orElseThrow(
+                        () -> new MovieNotFoundException("Showtime with id '" + request.getId() + "' does not exist"));
 
         Movie movie = mRepo.findById(request.getMovieId())
                 .orElseThrow(() -> new IllegalArgumentException("Movie not found with ID: " + request.getMovieId()));
@@ -201,6 +204,29 @@ public class ShowtimeService {
         showtimeRepository.deleteById(id);
     }
 
+    @Scheduled(fixedRate = 60000)
+    @Transactional
+    public void updateShowtimeStatus() {
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Showtime> upcomingshowtimes = showtimeRepository.findByStatus(ShowtimeStatus.UPCOMING);
+        for (Showtime showtime : upcomingshowtimes) {
+            if (showtime.getShowtime().isBefore(now)) {
+                showtime.setStatus(ShowtimeStatus.IN_PROGRESS);
+            }
+        }
+
+        List<Showtime> inProgressShowtimes = showtimeRepository.findByStatus(ShowtimeStatus.IN_PROGRESS);
+        for (Showtime showtime : inProgressShowtimes) {
+            if (showtime.getShowtime().plusHours(3).isBefore(now)) { // Assuming 2-hour movies
+                showtime.setStatus(ShowtimeStatus.FINISHED);
+            }
+        }
+
+        showtimeRepository.saveAll(upcomingshowtimes);
+        showtimeRepository.saveAll(inProgressShowtimes);
+    }
+
     /**
      * Maps a Showtime entity to a ShowtimeResponse DTO.
      * Converts a Showtime entity into a structured response object
@@ -217,6 +243,7 @@ public class ShowtimeService {
         response.setMovieId(showtime.getMovie().getId());
         response.setMovieTitle(showtime.getMovie().getTitle());
         response.setSeats(showtime.getSeats());
+        response.setStatus(showtime.getStatus());
         return response;
     }
 

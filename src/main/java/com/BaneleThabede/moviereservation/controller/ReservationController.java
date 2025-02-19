@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,9 +25,18 @@ public class ReservationController {
         return new ResponseEntity<>(reservationService.createReservation(request), HttpStatus.CREATED);
     }
 
-
     @GetMapping()
     public ResponseEntity<?> getReservations(){
         return ResponseEntity.ok(reservationService.getReservations());
     }
+
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserReservations(){
+        return ResponseEntity.ok(reservationService.getUserReservation());
+    }
+
+    @PutMapping("/cancel")
+    public ResponseEntity<?> cancelReservation(@RequestBody ReservationRequest request){
+        return ResponseEntity.ok(reservationService.cancelReservation(request));
+    } 
 }

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/movie")
+@RequestMapping("/api/movie")
 public class MovieContoller {
 
     @Autowired
@@ -40,7 +40,7 @@ public class MovieContoller {
     public ResponseEntity<?> getMovieByTitle(@PathVariable String title) {
         return ResponseEntity.ok(mService.getMovieByTitle(title));
     }
-
+ 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     public ResponseEntity<?> addMovie(@RequestBody Movie movie){

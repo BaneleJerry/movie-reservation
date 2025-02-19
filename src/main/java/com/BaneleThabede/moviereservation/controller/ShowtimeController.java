@@ -9,6 +9,7 @@ import com.BaneleThabede.moviereservation.service.ShowtimeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,12 +36,14 @@ public class ShowtimeController {
         return ResponseEntity.ok(showSevice.getShowtime(showtimeId));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<?> addShowtime(@RequestBody ShowtimeRequest request) {
         ShowtimeResponse newShowtime = showSevice.addShowtime(request);
         return ResponseEntity.ok(newShowtime);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/bulk")
     public ResponseEntity<?> addShowtimes(@RequestBody Collection<ShowtimeRequest> showtimes){
         Collection<ShowtimeResponse> savedShowtime = showSevice.addShowtimes(showtimes);
@@ -52,12 +55,14 @@ public class ShowtimeController {
         return ResponseEntity.ok(showSevice.getShowtimesByMovie(movieId));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteShowtime(UUID showtimeId){
         showSevice.deleteShowtime(showtimeId);
         return ResponseEntity.ok("Showtime deleted");
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update")
     public ResponseEntity<?> updateShowtime(@RequestBody ShowtimeRequest request){
         ShowtimeResponse updatedShowtime = showSevice.updateShowtime(request);

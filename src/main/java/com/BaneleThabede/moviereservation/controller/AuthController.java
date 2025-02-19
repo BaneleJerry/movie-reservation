@@ -23,15 +23,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
-     @Autowired
+    @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
     UserService userService;
 
- @Autowired
+    @Autowired
     JwtUtils jwtUtils;
 
     @PostMapping("/signup")
@@ -45,20 +45,22 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest){
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext()
-            .setAuthentication(authentication);
+                .setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
         String jwt = jwtUtils.generateJwtToken(authentication);
 
-        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername()));    
+        return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getUsername()));
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
-    public ResponseEntity<?> getUsers(){
-        return new ResponseEntity<>(userService.getUsers(),HttpStatus.OK);
+    public ResponseEntity<?> getUsers() {
+        return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 }

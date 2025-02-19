@@ -13,6 +13,7 @@ import com.BaneleThabede.moviereservation.entity.Showtime;
 import com.BaneleThabede.moviereservation.entity.User;
 import com.BaneleThabede.moviereservation.entity.enums.ReservationStatus;
 import com.BaneleThabede.moviereservation.entity.enums.SeatStatus;
+import com.BaneleThabede.moviereservation.entity.enums.ShowtimeStatus;
 import com.BaneleThabede.moviereservation.repository.ReservationRepository;
 import com.BaneleThabede.moviereservation.repository.SeatRepository;
 import com.BaneleThabede.moviereservation.repository.ShowtimeRepository;
@@ -43,8 +44,12 @@ public class ReservationService {
         Showtime showtime = showtimeRepository.findById(request.getShowtimeId())
                 .orElseThrow(() -> new RuntimeException("Showtime not found"));
 
-        if (showtime.getShowtime().isBefore(LocalDateTime.now())) {
+        if (showtime.getStatus().equals(ShowtimeStatus.FINISHED)) {
             throw new RuntimeException("Showtime has already passed");
+        }
+
+        if(showtime.getStatus().equals(ShowtimeStatus.UPCOMING)){
+            throw new RuntimeException("Showtime is going to be available for booking in the future");
         }
 
         if (reservationRepository.existsByShowtime_IdAndSeat_Id(request.getShowtimeId(), request.getSeat().getId())) {
@@ -58,9 +63,6 @@ public class ReservationService {
             throw new RuntimeException("Seat already reserved");
         }
 
-        seat.setStatus(SeatStatus.RESERVED);
-        seatRepository.save(seat);
-
         Reservation reservation = new Reservation();
         reservation.setShowtime(showtime);
         reservation.setSeat(seat);
@@ -68,11 +70,46 @@ public class ReservationService {
         reservation.setStatus(ReservationStatus.CONFIRMED);
         reservation.setReservationTime(LocalDateTime.now());
 
+        seat.setStatus(SeatStatus.RESERVED);
         return (mapToResponse(reservationRepository.save(reservation)));
     }
 
     public List<ReservationResponse> getReservations() {
         return reservationRepository.findAll().stream().map(this::mapToResponse).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public ReservationResponse cancelReservation(ReservationRequest request) {
+        if (request == null || request.getId() == null) {
+            throw new RuntimeException("The request body cannot be null or empty");
+        }
+
+        // Find reservation by ID
+        Reservation reservation = reservationRepository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("Reservation cannot be found"));
+
+        if(!(reservation.getUser().getId().equals(getCurrentUser().getId()))){
+            throw new RuntimeException("User is not Authicated");
+        }
+        // Update reservation status to CANCELED
+        reservation.setStatus(ReservationStatus.CANCELED);
+
+        // Update seat status to AVAILABLE
+        Seat seat = reservation.getSeat();
+        seat.setStatus(SeatStatus.AVAILABLE);
+
+        // Save the reservation update
+        Reservation savedReservations = reservationRepository.save(reservation);
+
+        // Construct and return a response
+        return mapToResponse(savedReservations);
+    }
+
+    public Collection<ReservationResponse> getUserReservation() {
+        return reservationRepository.findByUserId(getCurrentUser().getId())
+            .stream()
+            .map(this::mapToResponse)
+            .collect(Collectors.toList());
     }
 
     private User getCurrentUser() {
