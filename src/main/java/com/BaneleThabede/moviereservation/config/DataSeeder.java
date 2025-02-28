@@ -74,6 +74,7 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        printSeedInfo();
         if (seedData) {
             seedAdmin();
             seedUsers(seedUsers);
@@ -82,6 +83,14 @@ public class DataSeeder implements CommandLineRunner {
             seedReservations(seedReservations);
         }
 
+    }
+
+    private void printSeedInfo() {
+        System.out.println("Seeders enabled: " + seedData);
+        System.out.println("Seeders users: " + seedUsers);
+        System.out.println("Seeders movies: " + seedMovies);
+        System.out.println("Seeders showtimes: " + seedShowtimes);
+        System.out.println("Seeders reservations: " + seedReservations);
     }
 
     @Transactional

@@ -7,9 +7,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling
 public class MovieReservationSystemApplication {
+    public static void main(String[] args) {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MovieReservationSystemApplication.class, args);
-	}
-
+        SpringApplication.run(MovieReservationSystemApplication.class, args);
+    }
 }
